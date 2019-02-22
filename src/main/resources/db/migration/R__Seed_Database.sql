@@ -1,4 +1,4 @@
-INSERT INTO Users (UserId, UserName)
+INSERT INTO User (UserId, UserName)
 VALUES (1, "Bob"),
        (2, "Jane");
 
