@@ -1,8 +1,12 @@
 package com.lambdaschool.todos.users;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.lambdaschool.todos.todos.ToDo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A user
@@ -18,6 +22,10 @@ public class User {
 
   @Column(name = "UserName", nullable = false)
   private String userName;
+
+  @JsonManagedReference
+  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
+  private List<ToDo> toDos = new ArrayList<>();
 
   /**
    * Default Constructor for JPA
