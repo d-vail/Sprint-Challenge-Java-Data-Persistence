@@ -5,7 +5,6 @@ import com.lambdaschool.todos.users.User;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * To to do item
@@ -23,7 +22,7 @@ public class ToDo {
   private String description;
 
   @Column(name = "DateStarted")
-  private Date dateStarted;
+  private String dateStarted;
 
   @Column(name = "Completed")
   private int completed;
