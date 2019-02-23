@@ -18,21 +18,24 @@ import java.util.Date;
 public class ToDo {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ToDoId")
+  @Column(name = "ToDoId", nullable = false)
   private long toDoId;
 
-  @Column(name = "Description")
+  @Column(name = "Description", nullable = false)
   private String description;
 
-  @Column(name = "DateStarted")
+  @Column(name = "DateStarted", nullable = false)
   private String dateStarted;
 
-  @Column(name = "Completed")
+  @Column(name = "Completed", nullable = false)
   private int completed;
 
+  @Column(name = "UserId", nullable = false)
+  private long userId;
+
   @JsonBackReference
-  @ManyToOne
-  @JoinColumn(name = "UserId", nullable = false)
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "UserId", insertable = false, updatable = false)
   private User user;
 
   /**
@@ -44,7 +47,7 @@ public class ToDo {
    * Set the current timestamp before todo is inserted into database
    */
   @PrePersist
-  public void currentTimestamp() {
+  public void setDefaultTimestamp() {
     Date date = new Date();
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     this.dateStarted = dateFormat.format(date);

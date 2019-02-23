@@ -1,20 +1,27 @@
 package com.lambdaschool.todos.todos;
 
 import com.lambdaschool.todos.todos.projections.UserToDo;
+import com.lambdaschool.todos.users.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * ToDo REST Controller
  */
+@Slf4j
 @RestController
 @RequestMapping(path = "/todos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ToDoController {
   @Autowired
   private ToDoRepository toDoRepo;
+
+  @Autowired
+  private UserRepository userRepo;
 
   private static final int TODO_PENDING = 0;
   private static final int TODO_COMPLETE = 1;
@@ -67,5 +74,29 @@ public class ToDoController {
   @PostMapping()
   public ToDo createToDo(@RequestBody ToDo toDo) {
     return toDoRepo.save(toDo);
+  }
+
+  /**
+   * Update a todo based on the todo id.
+   *
+   * @param toDoId      The todo id
+   * @param updatedToDo The todo JSON data object
+   * @return            The updated todo or null if todo was not found
+   */
+  @PutMapping("/todoid/{toDoId}")
+  public ToDo updateToDo(@PathVariable long toDoId, @RequestBody ToDo updatedToDo) {
+    Optional<ToDo> toDo = toDoRepo.findById(toDoId);
+
+    if(toDo.isPresent()) {
+      if(updatedToDo.getDateStarted() == null) {
+        updatedToDo.setDateStarted(toDo.get().getDateStarted());
+      }
+
+      updatedToDo.setToDoId(toDoId);
+      toDoRepo.save(updatedToDo);
+      return updatedToDo;
+    } else {
+      return null;
+    }
   }
 }

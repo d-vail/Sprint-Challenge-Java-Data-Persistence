@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * User REST Controller
@@ -57,5 +58,25 @@ public class UserController {
   @PostMapping()
   public User createUser(@RequestBody User user) {
     return userRepo.save(user);
+  }
+
+  /**
+   * Update a user based on the user id.
+   *
+   * @param userId      The user id
+   * @param updatedUser A user JSON data object
+   * @return            The updated user or null if user was not found
+   */
+  @PutMapping("/userid/{userId}")
+  public User updateUser(@PathVariable long userId, @RequestBody User updatedUser) {
+    Optional<User> user = userRepo.findById(userId);
+
+    if(user.isPresent()) {
+      updatedUser.setUserId(userId);
+      userRepo.save(updatedUser);
+      return updatedUser;
+    } else {
+      return null;
+    }
   }
 }
