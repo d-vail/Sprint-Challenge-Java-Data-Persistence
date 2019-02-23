@@ -3,10 +3,7 @@ package com.lambdaschool.todos.todos;
 import com.lambdaschool.todos.todos.projections.UserToDo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -60,5 +57,15 @@ public class ToDoController {
   @GetMapping("/active")
   public List<ToDo> findPendingToDos() {
     return toDoRepo.findByCompletedEquals(TODO_PENDING);
+  }
+
+  /**
+   * Create a new todo
+   * @param toDo  A todo JSON data object
+   * @return      The saved todo
+   */
+  @PostMapping()
+  public ToDo createToDo(@RequestBody ToDo toDo) {
+    return toDoRepo.save(toDo);
   }
 }

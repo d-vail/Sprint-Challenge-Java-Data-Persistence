@@ -3,10 +3,7 @@ package com.lambdaschool.todos.users;
 import com.lambdaschool.todos.users.projections.UserSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,5 +46,16 @@ public class UserController {
   @GetMapping("/username/{userName}")
   public List<UserSummary> findUserByName(@PathVariable String userName) {
     return userRepo.findByUserName(userName);
+  }
+
+  /**
+   * Create a new user.
+   *
+   * @param user  A user JSON data object
+   * @return      The saved user
+   */
+  @PostMapping()
+  public User createUser(@RequestBody User user) {
+    return userRepo.save(user);
   }
 }

@@ -5,9 +5,12 @@ import com.lambdaschool.todos.users.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
- * To to do item
+ * A todo item
  */
 @Data
 @Entity
@@ -36,4 +39,14 @@ public class ToDo {
    * Default Constructor for JPA
    */
   public ToDo() { }
+
+  /**
+   * Set the current timestamp before todo is inserted into database
+   */
+  @PrePersist
+  public void currentTimestamp() {
+    Date date = new Date();
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    this.dateStarted = dateFormat.format(date);
+  }
 }
