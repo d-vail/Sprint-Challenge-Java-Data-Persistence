@@ -79,4 +79,21 @@ public class UserController {
       return null;
     }
   }
+
+  /**
+   * Delete a user and the user's associated todos based on the user id.
+   *
+   * @param userId  The user id
+   * @return        The deleted user and todos or null if user is not found
+   */
+  @DeleteMapping("/userid/{userId}")
+  public User deleteUser(@PathVariable long userId) {
+    Optional<User> user = userRepo.findById(userId);
+
+    if(user.isPresent()) {
+      userRepo.deleteById(userId);
+    }
+
+    return user.orElse(null);
+  }
 }

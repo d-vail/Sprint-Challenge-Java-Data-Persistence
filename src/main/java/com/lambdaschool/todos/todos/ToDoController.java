@@ -1,8 +1,6 @@
 package com.lambdaschool.todos.todos;
 
 import com.lambdaschool.todos.todos.projections.UserToDo;
-import com.lambdaschool.todos.users.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +11,11 @@ import java.util.Optional;
 /**
  * ToDo REST Controller
  */
-@Slf4j
 @RestController
 @RequestMapping(path = "/todos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ToDoController {
   @Autowired
   private ToDoRepository toDoRepo;
-
-  @Autowired
-  private UserRepository userRepo;
 
   private static final int TODO_PENDING = 0;
   private static final int TODO_COMPLETE = 1;
@@ -29,7 +23,7 @@ public class ToDoController {
   /**
    * Find all todo items.
    *
-   * @return  A list of all to do items
+   * @return  A list of all todo items
    */
   @GetMapping()
   public List<ToDo> findAllToDos() {
@@ -98,5 +92,22 @@ public class ToDoController {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Delete a todo based on the todo id.
+   *
+   * @param toDoId  The todo id
+   * @return        The deleted todo or null if the todo is not found
+   */
+  @DeleteMapping("/todoid/{toDoId}")
+  public ToDo deleteTodo(@PathVariable long toDoId) {
+    Optional<ToDo> toDo = toDoRepo.findById(toDoId);
+
+    if(toDo.isPresent()) {
+      toDoRepo.deleteById(toDoId);
+    }
+
+    return toDo.orElse(null);
   }
 }

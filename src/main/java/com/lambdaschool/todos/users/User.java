@@ -24,7 +24,7 @@ public class User {
   private String userName;
 
   @JsonManagedReference
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   private List<ToDo> toDos = new ArrayList<>();
 
   /**

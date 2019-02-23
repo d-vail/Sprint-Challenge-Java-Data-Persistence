@@ -34,7 +34,7 @@ public class ToDo {
   private long userId;
 
   @JsonBackReference
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "UserId", insertable = false, updatable = false)
   private User user;
 
