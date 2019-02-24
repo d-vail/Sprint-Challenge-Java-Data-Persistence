@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * User REST Controller
@@ -15,85 +14,70 @@ import java.util.Optional;
 @RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
   @Autowired
-  private UserRepository userRepo;
+  private UserService userService;
 
   /**
-   * Find all users.
+   * Map GET /users to getUsers() in User Service.
    *
    * @return  A list of all users
    */
   @GetMapping()
-  public List<UserSummary> findAllUsers() {
-    return userRepo.findAllUsersBy();
+  public List<UserSummary> getUsers() {
+    return userService.getUsers();
   }
 
   /**
-   * Find a user based on the user id.
+   * Map GET /users/userid/{userId} to getUser() in User Service.
    *
-   * @param userId  A user id
-   * @return        A user or null if user is not found
+   * @return  A user
    */
   @GetMapping("/userid/{userId}")
-  public UserSummary findUserById(@PathVariable long userId) {
-    return userRepo.findByUserId(userId);
+  public UserSummary getUser(@PathVariable long userId) {
+    return userService.getUser(userId);
   }
 
   /**
-   * Find a user based on the user name.
+   * Map GET /users/username/{userName} to getUserByName() in User Service.
    *
    * @param userName  A user name
    * @return          A list of matching users
    */
   @GetMapping("/username/{userName}")
-  public List<UserSummary> findUserByName(@PathVariable String userName) {
-    return userRepo.findByUserName(userName);
+  public List<UserSummary> getUserByName(@PathVariable String userName) {
+    return userService.getUserByName(userName);
   }
 
   /**
-   * Create a new user.
+   * Map POST /users to createUser() in User Service.
    *
    * @param user  A user JSON data object
    * @return      The saved user
    */
   @PostMapping()
   public User createUser(@RequestBody User user) {
-    return userRepo.save(user);
+    return userService.createUser(user);
   }
 
   /**
-   * Update a user based on the user id.
+   * Map PUT /users/userid/{userId} to updateUser() in User Service.
    *
    * @param userId      The user id
    * @param updatedUser A user JSON data object
-   * @return            The updated user or null if user was not found
+   * @return            The updated user
    */
   @PutMapping("/userid/{userId}")
   public User updateUser(@PathVariable long userId, @RequestBody User updatedUser) {
-    Optional<User> user = userRepo.findById(userId);
-
-    if(user.isPresent()) {
-      updatedUser.setUserId(userId);
-      userRepo.save(updatedUser);
-      return updatedUser;
-    } else {
-      return null;
-    }
+    return userService.updateUser(userId, updatedUser);
   }
 
   /**
-   * Delete a user and the user's associated todos based on the user id.
+   * Map DELETE /users/userid/{userId} to deleteUser() in User Service.
    *
    * @param userId  The user id
-   * @return        The deleted user and todos or null if user is not found
+   * @return        The deleted user and associated todos
    */
   @DeleteMapping("/userid/{userId}")
   public User deleteUser(@PathVariable long userId) {
-    Optional<User> user = userRepo.findById(userId);
-
-    if(user.isPresent()) {
-      userRepo.deleteById(userId);
-    }
-
-    return user.orElse(null);
+    return userService.deleteUser(userId);
   }
 }

@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * ToDo REST Controller
@@ -15,99 +14,80 @@ import java.util.Optional;
 @RequestMapping(path = "/todos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ToDoController {
   @Autowired
-  private ToDoRepository toDoRepo;
-
-  private static final int TODO_PENDING = 0;
-  private static final int TODO_COMPLETE = 1;
+  private ToDoService toDoService;
 
   /**
-   * Find all todo items.
+   * Map GET /todos to getToDos() in ToDo Service.
    *
-   * @return  A list of all todo items
+   * @return  A list of all todos
    */
   @GetMapping()
-  public List<ToDo> findAllToDos() {
-    return toDoRepo.findAll();
+  public List<ToDo> getToDos() {
+    return toDoService.getToDos();
   }
 
   /**
-   * Find a todo item by id
+   * Map GET /todos/todoid/{toDoId} to getToDo() in ToDo Service.
+   *
    * @param toDoId  A todo id
-   * @return        A todo item or null if todo is not found
+   * @return        A todo
    */
   @GetMapping("/todoid/{toDoId}")
-  public ToDo findToDoById(@PathVariable long toDoId) {
-    return toDoRepo.findById(toDoId).orElse(null);
+  public ToDo getToDo(@PathVariable long toDoId) {
+    return toDoService.getToDo(toDoId);
   }
 
   /**
-   * Find all todos with the assigned user name.
+   * Map GET /todos/users to getToDosWithUser() in ToDo Service.
    *
-   * @return  A list of all todos with the assigned user name
+   * @return  A list of all todos
    */
   @GetMapping("/users")
   public List<UserToDo> findAllUserToDos() {
-    return toDoRepo.findUserToDosBy();
+    return toDoService.getToDosWithUser();
   }
 
   /**
-   * Find all todos not yet completed.
+   * Map GET /todos/active to getActiveToDos() in ToDo Service.
    *
    * @return  A list of pending todos
    */
   @GetMapping("/active")
   public List<ToDo> findPendingToDos() {
-    return toDoRepo.findByCompletedEquals(TODO_PENDING);
+    return toDoService.getActiveToDos();
   }
 
   /**
-   * Create a new todo
+   * Map POST /todos to createToDo() in ToDo Service.
+   *
    * @param toDo  A todo JSON data object
    * @return      The saved todo
    */
   @PostMapping()
   public ToDo createToDo(@RequestBody ToDo toDo) {
-    return toDoRepo.save(toDo);
+    return toDoService.createToDo(toDo);
   }
 
   /**
-   * Update a todo based on the todo id.
+   * Map PUT /todos/{toDoId} to updateToDo() in ToDo Service.
    *
    * @param toDoId      The todo id
    * @param updatedToDo The todo JSON data object
-   * @return            The updated todo or null if todo was not found
+   * @return            The updated todo
    */
   @PutMapping("/todoid/{toDoId}")
   public ToDo updateToDo(@PathVariable long toDoId, @RequestBody ToDo updatedToDo) {
-    Optional<ToDo> toDo = toDoRepo.findById(toDoId);
-
-    if(toDo.isPresent()) {
-      if(updatedToDo.getDateStarted() == null) {
-        updatedToDo.setDateStarted(toDo.get().getDateStarted());
-      }
-
-      updatedToDo.setToDoId(toDoId);
-      toDoRepo.save(updatedToDo);
-      return updatedToDo;
-    } else {
-      return null;
-    }
+    return toDoService.updateToDo(toDoId, updatedToDo);
   }
 
   /**
-   * Delete a todo based on the todo id.
+   * Map DELETE /todos/{toDoId} to deleteTodo() in ToDo Service.
    *
    * @param toDoId  The todo id
-   * @return        The deleted todo or null if the todo is not found
+   * @return        The deleted todo
    */
   @DeleteMapping("/todoid/{toDoId}")
   public ToDo deleteTodo(@PathVariable long toDoId) {
-    Optional<ToDo> toDo = toDoRepo.findById(toDoId);
-
-    if(toDo.isPresent()) {
-      toDoRepo.deleteById(toDoId);
-    }
-
-    return toDo.orElse(null);
+    return toDoService.deleteToDo(toDoId);
   }
 }
