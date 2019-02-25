@@ -2,6 +2,7 @@ package com.lambdaschool.todos.users;
 
 import com.lambdaschool.todos.exceptions.ResourceNotFoundException;
 import com.lambdaschool.todos.users.projections.UserSummary;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value = "/users", description = "CRUD operations for users", consumes = "application/json")
 public class UserController {
   @Autowired
   private UserService userService;
@@ -23,6 +25,10 @@ public class UserController {
    * @return  A list of all users
    */
   @GetMapping()
+  @ApiOperation(value = "Finds all users", response = UserSummary.class, responseContainer = "List")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list of users")
+  })
   public List<UserSummary> getUsers() {
     return userService.getUsers();
   }
@@ -34,7 +40,14 @@ public class UserController {
    * @throws ResourceNotFoundException if user id does not exist
    */
   @GetMapping("/userid/{userId}")
-  public UserSummary getUser(@PathVariable long userId) throws ResourceNotFoundException {
+  @ApiOperation(value = "Find a user by id", response = UserSummary.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved user"),
+          @ApiResponse(code = 404, message = "Invalid user id")
+  })
+  public UserSummary getUser(
+          @ApiParam(value = "The user id", required = true) @PathVariable long userId
+  ) throws ResourceNotFoundException {
     return userService.getUser(userId);
   }
 
@@ -46,7 +59,14 @@ public class UserController {
    * @throws ResourceNotFoundException if user name does not exist
    */
   @GetMapping("/username/{userName}")
-  public List<UserSummary> getUserByName(@PathVariable String userName) throws ResourceNotFoundException {
+  @ApiOperation(value = "Find a user by name", response = UserSummary.class, responseContainer = "List")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved user"),
+          @ApiResponse(code = 404, message = "Invalid user name")
+  })
+  public List<UserSummary> getUserByName(
+          @ApiParam(value = "The user name", required = true) @PathVariable String userName
+  ) throws ResourceNotFoundException {
     return userService.getUserByName(userName);
   }
 
@@ -57,7 +77,12 @@ public class UserController {
    * @return      The saved user
    */
   @PostMapping()
-  public User createUser(@RequestBody User user) {
+  @ApiOperation(value = "Create a new user", response = User.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully created user")
+  })
+  public User createUser(
+          @ApiParam(value = "The user object that needs to be created", required = true) @RequestBody User user) {
     return userService.createUser(user);
   }
 
@@ -70,7 +95,15 @@ public class UserController {
    * @throws ResourceNotFoundException if user id does not exist
    */
   @PutMapping("/userid/{userId}")
-  public User updateUser(@PathVariable long userId, @RequestBody User updatedUser) throws ResourceNotFoundException {
+  @ApiOperation(value = "Updates an existing user", response = User.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully updated user"),
+          @ApiResponse(code = 404, message = "Invalid user id")
+  })
+  public User updateUser(
+          @ApiParam(value = "The user id", required = true) @PathVariable long userId,
+          @ApiParam(value = "The user object that needs to be updated", required = true) @RequestBody User updatedUser
+  ) throws ResourceNotFoundException {
     return userService.updateUser(userId, updatedUser);
   }
 
@@ -82,7 +115,14 @@ public class UserController {
    * @throws ResourceNotFoundException if user id does not exist
    */
   @DeleteMapping("/userid/{userId}")
-  public User deleteUser(@PathVariable long userId) throws ResourceNotFoundException {
+  @ApiOperation(value = "Deletes a user", response = User.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully deleted user"),
+          @ApiResponse(code = 404, message = "Invalid user id")
+  })
+  public User deleteUser(
+          @ApiParam(value = "The user id", required = true) @PathVariable long userId
+  ) throws ResourceNotFoundException {
     return userService.deleteUser(userId);
   }
 }
