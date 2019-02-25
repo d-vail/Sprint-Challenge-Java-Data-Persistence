@@ -5,6 +5,9 @@ import com.lambdaschool.todos.users.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,19 +21,25 @@ import java.util.Date;
 public class ToDo {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ToDoId", nullable = false)
+  @Column(name = "ToDoId")
   private long toDoId;
 
-  @Column(name = "Description", nullable = false)
+  @NotNull(message = "description cannot be blank")
+  @Column(name = "Description")
   private String description;
 
-  @Column(name = "DateStarted", nullable = false)
+  @NotNull(message = "dateStarted cannot be blank")
+  @Column(name = "DateStarted")
   private String dateStarted;
 
-  @Column(name = "Completed", nullable = false)
+  @NotNull(message = "completed cannot be blank")
+  @Min(value = 0, message = "completed must be a 0 or 1")
+  @Max(value = 1, message = "completed must be a 0 or 1")
+  @Column(name = "Completed")
   private int completed;
 
-  @Column(name = "UserId", nullable = false)
+  @NotNull(message = "userId cannot be blank")
+  @Column(name = "UserId")
   private long userId;
 
   @JsonBackReference

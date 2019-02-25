@@ -5,6 +5,7 @@ import com.lambdaschool.todos.todos.ToDo;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +18,11 @@ import java.util.List;
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "UserId", nullable = false)
+  @Column(name = "UserId")
   private long userId;
 
-  @Column(name = "UserName", nullable = false)
+  @NotNull(message = "userName cannot be blank")
+  @Column(name = "UserName")
   private String userName;
 
   @JsonManagedReference
