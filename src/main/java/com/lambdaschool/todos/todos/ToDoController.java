@@ -27,7 +27,8 @@ public class ToDoController {
   @GetMapping()
   @ApiOperation(value = "Finds all to do's", response = ToDo.class, responseContainer = "List")
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successfully retrieved list of to do's")
+          @ApiResponse(code = 200, message = "Successfully retrieved list of to do's"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public List<ToDo> getToDos() {
     return toDoService.getToDos();
@@ -44,7 +45,8 @@ public class ToDoController {
   @ApiOperation(value = "Find a to do by id", response = ToDo.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully retrieved to do"),
-          @ApiResponse(code = 404, message = "Invalid to do id")
+          @ApiResponse(code = 404, message = "Invalid to do id"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public ToDo getToDo(
           @ApiParam(value = "The to do id", required = true) @PathVariable long toDoId
@@ -61,7 +63,8 @@ public class ToDoController {
   @ApiOperation(value = "Finds all to do's with the assigned user", response = UserToDo.class,
           responseContainer = "List")
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successfully retrieved list of to do's")
+          @ApiResponse(code = 200, message = "Successfully retrieved list of to do's"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public List<UserToDo> findAllUserToDos() {
     return toDoService.getToDosWithUser();
@@ -76,7 +79,8 @@ public class ToDoController {
   @ApiOperation(value = "Finds all pending to do's", response = ToDo.class, responseContainer =
           "List")
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successfully retrieved list of active to do's")
+          @ApiResponse(code = 200, message = "Successfully retrieved list of active to do's"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public List<ToDo> findPendingToDos() {
     return toDoService.getActiveToDos();
@@ -91,7 +95,9 @@ public class ToDoController {
   @PostMapping()
   @ApiOperation(value = "Create a new to do", response = ToDo.class)
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successfully created to do")
+          @ApiResponse(code = 200, message = "Successfully created to do"),
+          @ApiResponse(code = 400, message = "Invalid request body"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public ToDo createToDo(
           @ApiParam(value = "The to do object that needs to be created", required = true) @RequestBody ToDo toDo) {
@@ -110,7 +116,9 @@ public class ToDoController {
   @ApiOperation(value = "Update an existing to do", response = ToDo.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully updated to do"),
-          @ApiResponse(code = 404, message = "Invalid to do id")
+          @ApiResponse(code = 400, message = "Invalid request body"),
+          @ApiResponse(code = 404, message = "Invalid to do id"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public ToDo updateToDo(
           @ApiParam(value = "The to do id", required = true) @PathVariable long toDoId,
@@ -130,7 +138,8 @@ public class ToDoController {
   @ApiOperation(value = "Deletes a to do", response = ToDo.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully deleted to do"),
-          @ApiResponse(code = 404, message = "Invalid to do id")
+          @ApiResponse(code = 404, message = "Invalid to do id"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public ToDo deleteTodo(
           @ApiParam(value = "The to do id", required = true) @PathVariable long toDoId

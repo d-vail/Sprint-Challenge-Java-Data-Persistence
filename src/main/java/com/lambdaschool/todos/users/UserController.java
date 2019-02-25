@@ -27,7 +27,8 @@ public class UserController {
   @GetMapping()
   @ApiOperation(value = "Finds all users", response = UserSummary.class, responseContainer = "List")
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successfully retrieved list of users")
+          @ApiResponse(code = 200, message = "Successfully retrieved list of users"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public List<UserSummary> getUsers() {
     return userService.getUsers();
@@ -43,7 +44,8 @@ public class UserController {
   @ApiOperation(value = "Find a user by id", response = UserSummary.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully retrieved user"),
-          @ApiResponse(code = 404, message = "Invalid user id")
+          @ApiResponse(code = 404, message = "Invalid user id"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public UserSummary getUser(
           @ApiParam(value = "The user id", required = true) @PathVariable long userId
@@ -62,7 +64,8 @@ public class UserController {
   @ApiOperation(value = "Find a user by name", response = UserSummary.class, responseContainer = "List")
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully retrieved user"),
-          @ApiResponse(code = 404, message = "Invalid user name")
+          @ApiResponse(code = 404, message = "Invalid user name"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public List<UserSummary> getUserByName(
           @ApiParam(value = "The user name", required = true) @PathVariable String userName
@@ -79,7 +82,9 @@ public class UserController {
   @PostMapping()
   @ApiOperation(value = "Create a new user", response = User.class)
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successfully created user")
+          @ApiResponse(code = 200, message = "Successfully created user"),
+          @ApiResponse(code = 400, message = "Invalid request body"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public User createUser(
           @ApiParam(value = "The user object that needs to be created", required = true) @RequestBody User user) {
@@ -98,7 +103,9 @@ public class UserController {
   @ApiOperation(value = "Updates an existing user", response = User.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully updated user"),
-          @ApiResponse(code = 404, message = "Invalid user id")
+          @ApiResponse(code = 400, message = "Invalid request body"),
+          @ApiResponse(code = 404, message = "Invalid user id"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public User updateUser(
           @ApiParam(value = "The user id", required = true) @PathVariable long userId,
@@ -118,7 +125,8 @@ public class UserController {
   @ApiOperation(value = "Deletes a user", response = User.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully deleted user"),
-          @ApiResponse(code = 404, message = "Invalid user id")
+          @ApiResponse(code = 404, message = "Invalid user id"),
+          @ApiResponse(code = 500, message = "Something has gone terribly wrong")
   })
   public User deleteUser(
           @ApiParam(value = "The user id", required = true) @PathVariable long userId
