@@ -1,5 +1,6 @@
 package com.lambdaschool.todos.users;
 
+import com.lambdaschool.todos.exceptions.ResourceNotFoundException;
 import com.lambdaschool.todos.users.projections.UserSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,14 @@ public class UserService {
    *
    * @param userId  A user id
    * @return        A user
+   * @throws ResourceNotFoundException if user id does not exist
    */
-  public UserSummary getUser(long userId) {
-    return userRepo.findByUserId(userId);
+  public UserSummary getUser(long userId) throws ResourceNotFoundException {
+    UserSummary user = userRepo.findByUserId(userId);
+    if(user == null) {
+      throw new ResourceNotFoundException(User.class, "userId", Long.toString(userId));
+    }
+    return user;
   }
 
   /**
@@ -39,9 +45,14 @@ public class UserService {
    *
    * @param userName  A user name
    * @return          A list of matching users
+   * @throws ResourceNotFoundException if user name does not exist
    */
-  public List<UserSummary> getUserByName(String userName) {
-    return userRepo.findByUserName(userName);
+  public List<UserSummary> getUserByName(String userName) throws ResourceNotFoundException {
+    List<UserSummary> users = userRepo.findByUserName(userName);
+    if(users.isEmpty()) {
+      throw new ResourceNotFoundException(User.class, "userName", userName);
+    }
+    return users;
   }
 
   /**
@@ -60,17 +71,18 @@ public class UserService {
    * @param userId      The user id
    * @param updatedUser A user JSON data object
    * @return            The updated user
+   * @throws ResourceNotFoundException if user id does not exist
    */
-  public User updateUser(long userId, User updatedUser) {
+  public User updateUser(long userId, User updatedUser) throws ResourceNotFoundException {
     Optional<User> user = userRepo.findById(userId);
 
-    if(user.isPresent()) {
-      updatedUser.setUserId(userId);
-      userRepo.save(updatedUser);
-      return updatedUser;
-    } else {
-      return null;
+    if(user.isEmpty()) {
+      throw new ResourceNotFoundException(User.class, "userId", Long.toString(userId));
     }
+
+    updatedUser.setUserId(userId);
+    userRepo.save(updatedUser);
+    return updatedUser;
   }
 
   /**
@@ -78,14 +90,16 @@ public class UserService {
    *
    * @param userId  The user id
    * @return        The deleted user and associated todos
+   * @throws ResourceNotFoundException if user id does not exist
    */
-  public User deleteUser(long userId) {
+  public User deleteUser(long userId) throws ResourceNotFoundException {
     Optional<User> user = userRepo.findById(userId);
 
-    if(user.isPresent()) {
-      userRepo.deleteById(userId);
+    if(user.isEmpty()) {
+      throw new ResourceNotFoundException(User.class, "userId", Long.toString(userId));
     }
 
+    userRepo.deleteById(userId);
     return user.orElse(null);
   }
 }

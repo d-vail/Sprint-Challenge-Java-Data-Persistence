@@ -1,5 +1,6 @@
 package com.lambdaschool.todos.todos;
 
+import com.lambdaschool.todos.exceptions.ResourceNotFoundException;
 import com.lambdaschool.todos.todos.projections.UserToDo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,9 +32,10 @@ public class ToDoController {
    *
    * @param toDoId  A todo id
    * @return        A todo
+   * @throws ResourceNotFoundException if todo id does not exist
    */
   @GetMapping("/todoid/{toDoId}")
-  public ToDo getToDo(@PathVariable long toDoId) {
+  public ToDo getToDo(@PathVariable long toDoId) throws ResourceNotFoundException {
     return toDoService.getToDo(toDoId);
   }
 
@@ -74,9 +76,10 @@ public class ToDoController {
    * @param toDoId      The todo id
    * @param updatedToDo The todo JSON data object
    * @return            The updated todo
+   * @throws ResourceNotFoundException if todo id does not exist
    */
   @PutMapping("/todoid/{toDoId}")
-  public ToDo updateToDo(@PathVariable long toDoId, @RequestBody ToDo updatedToDo) {
+  public ToDo updateToDo(@PathVariable long toDoId, @RequestBody ToDo updatedToDo) throws ResourceNotFoundException {
     return toDoService.updateToDo(toDoId, updatedToDo);
   }
 
@@ -85,9 +88,10 @@ public class ToDoController {
    *
    * @param toDoId  The todo id
    * @return        The deleted todo
+   * @throws ResourceNotFoundException if todo id does not exist
    */
   @DeleteMapping("/todoid/{toDoId}")
-  public ToDo deleteTodo(@PathVariable long toDoId) {
+  public ToDo deleteTodo(@PathVariable long toDoId) throws ResourceNotFoundException {
     return toDoService.deleteToDo(toDoId);
   }
 }

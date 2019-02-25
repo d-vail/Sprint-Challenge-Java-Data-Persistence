@@ -1,5 +1,6 @@
 package com.lambdaschool.todos.users;
 
+import com.lambdaschool.todos.exceptions.ResourceNotFoundException;
 import com.lambdaschool.todos.users.projections.UserSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,9 +31,10 @@ public class UserController {
    * Map GET /users/userid/{userId} to getUser() in User Service.
    *
    * @return  A user
+   * @throws ResourceNotFoundException if user id does not exist
    */
   @GetMapping("/userid/{userId}")
-  public UserSummary getUser(@PathVariable long userId) {
+  public UserSummary getUser(@PathVariable long userId) throws ResourceNotFoundException {
     return userService.getUser(userId);
   }
 
@@ -41,9 +43,10 @@ public class UserController {
    *
    * @param userName  A user name
    * @return          A list of matching users
+   * @throws ResourceNotFoundException if user name does not exist
    */
   @GetMapping("/username/{userName}")
-  public List<UserSummary> getUserByName(@PathVariable String userName) {
+  public List<UserSummary> getUserByName(@PathVariable String userName) throws ResourceNotFoundException {
     return userService.getUserByName(userName);
   }
 
@@ -64,9 +67,10 @@ public class UserController {
    * @param userId      The user id
    * @param updatedUser A user JSON data object
    * @return            The updated user
+   * @throws ResourceNotFoundException if user id does not exist
    */
   @PutMapping("/userid/{userId}")
-  public User updateUser(@PathVariable long userId, @RequestBody User updatedUser) {
+  public User updateUser(@PathVariable long userId, @RequestBody User updatedUser) throws ResourceNotFoundException {
     return userService.updateUser(userId, updatedUser);
   }
 
@@ -75,9 +79,10 @@ public class UserController {
    *
    * @param userId  The user id
    * @return        The deleted user and associated todos
+   * @throws ResourceNotFoundException if user id does not exist
    */
   @DeleteMapping("/userid/{userId}")
-  public User deleteUser(@PathVariable long userId) {
+  public User deleteUser(@PathVariable long userId) throws ResourceNotFoundException {
     return userService.deleteUser(userId);
   }
 }

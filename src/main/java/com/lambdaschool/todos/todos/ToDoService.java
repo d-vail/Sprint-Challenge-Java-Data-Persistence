@@ -1,6 +1,9 @@
 package com.lambdaschool.todos.todos;
 
+import com.lambdaschool.todos.exceptions.ResourceNotFoundException;
 import com.lambdaschool.todos.todos.projections.UserToDo;
+import com.lambdaschool.todos.users.User;
+import com.lambdaschool.todos.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,9 @@ import java.util.Optional;
 public class ToDoService {
   @Autowired
   private ToDoRepository toDoRepo;
+
+  @Autowired
+  private UserRepository userRepo;
 
   private static final int TODO_PENDING = 0;
   private static final int TODO_COMPLETE = 1;
@@ -32,9 +38,14 @@ public class ToDoService {
    *
    * @param toDoId  A todo id
    * @return        A todo
+   * @throws ResourceNotFoundException if todo id does not exist
    */
-  public ToDo getToDo(long toDoId) {
-    return toDoRepo.findById(toDoId).orElse(null);
+  public ToDo getToDo(long toDoId) throws ResourceNotFoundException {
+    Optional<ToDo> toDo = toDoRepo.findById(toDoId);
+    if(toDo.isEmpty()) {
+      throw new ResourceNotFoundException(ToDo.class, "toDoId", Long.toString(toDoId));
+    }
+    return toDo.orElse(null);
   }
 
   /**
@@ -71,21 +82,28 @@ public class ToDoService {
    * @param toDoId      The todo id
    * @param updatedToDo The todo JSON data object
    * @return            The updated todo
+   * @throws ResourceNotFoundException if todo id does not exist
    */
-  public ToDo updateToDo(long toDoId, ToDo updatedToDo) {
+  public ToDo updateToDo(long toDoId, ToDo updatedToDo) throws ResourceNotFoundException {
+    Long userId = updatedToDo.getUserId();
     Optional<ToDo> toDo = toDoRepo.findById(toDoId);
+    Optional<User> user = userRepo.findById(userId);
 
-    if(toDo.isPresent()) {
-      if(updatedToDo.getDateStarted() == null) {
-        updatedToDo.setDateStarted(toDo.get().getDateStarted());
-      }
-
-      updatedToDo.setToDoId(toDoId);
-      toDoRepo.save(updatedToDo);
-      return updatedToDo;
-    } else {
-      return null;
+    if(toDo.isEmpty()) {
+      throw new ResourceNotFoundException(ToDo.class, "toDoId", Long.toString(toDoId));
     }
+
+    if(user.isEmpty()) {
+      throw new ResourceNotFoundException(User.class, "userId", Long.toString(userId));
+    }
+
+    if(updatedToDo.getDateStarted() == null) {
+      updatedToDo.setDateStarted(toDo.get().getDateStarted());
+    }
+
+    updatedToDo.setToDoId(toDoId);
+    toDoRepo.save(updatedToDo);
+    return updatedToDo;
   }
 
   /**
@@ -93,14 +111,16 @@ public class ToDoService {
    *
    * @param toDoId  The todo id
    * @return        The deleted todo
+   * @throws ResourceNotFoundException if todo id does not exist
    */
-  public ToDo deleteToDo(long toDoId) {
+  public ToDo deleteToDo(long toDoId) throws ResourceNotFoundException {
     Optional<ToDo> toDo = toDoRepo.findById(toDoId);
 
-    if(toDo.isPresent()) {
-      toDoRepo.deleteById(toDoId);
+    if(toDo.isEmpty()) {
+      throw new ResourceNotFoundException(ToDo.class, "toDoId", Long.toString(toDoId));
     }
 
+    toDoRepo.deleteById(toDoId);
     return toDo.orElse(null);
   }
 }
