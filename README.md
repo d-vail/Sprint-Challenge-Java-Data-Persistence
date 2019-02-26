@@ -80,4 +80,4 @@ Expose at least the following the actuator endpoints to help with system managem
 ## Stretch Goals
 
 - Add custom responses to the rest of the endpoints
-- Update each of these three actuator endpoints to report your own messages
+- Update each of the three actuator endpoints to report your own messages
