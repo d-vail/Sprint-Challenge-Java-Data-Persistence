@@ -105,7 +105,7 @@ public class ToDoController {
   }
 
   /**
-   * Map PUT /todos/{toDoId} to updateToDo() in ToDo Service.
+   * Map PUT /todos/todoid/{toDoId} to updateToDo() in ToDo Service.
    *
    * @param toDoId      The todo id
    * @param updatedToDo The todo JSON data object
@@ -128,7 +128,7 @@ public class ToDoController {
   }
 
   /**
-   * Map DELETE /todos/{toDoId} to deleteTodo() in ToDo Service.
+   * Map DELETE /todos/todoid/{toDoId} to deleteTodo() in ToDo Service.
    *
    * @param toDoId  The todo id
    * @return        The deleted todo

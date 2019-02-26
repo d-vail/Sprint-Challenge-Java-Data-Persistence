@@ -20,7 +20,7 @@ public class Error {
    *
    * @param httpStatus  HTTP status code
    * @param message     A user friendly error message
-   * @param details     Additional details that could be help resolve the error
+   * @param details     Additional details that could help resolve the error
    */
   public Error(HttpStatus httpStatus, String message, String details) {
     this.timestamp = new Date();
